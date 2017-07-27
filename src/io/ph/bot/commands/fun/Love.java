@@ -12,8 +12,8 @@ import net.dv8tion.jda.core.entities.Message;
                 aliases = {"hug", "glomp"},
                 category = CommandCategory.FUN,
                 permission = Permission.NONE,
-                description = "Give love to another user.",
-                example = "Jiminya Oppa loved Mirrorsound!"
+                description = "Gives love to another user.",
+                example = "Jiminya"
                 )
 
 public class Love extends Command {
@@ -21,6 +21,6 @@ public class Love extends Command {
     public void executeCommand(Message msg) {
                 String lover = msg.getAuthor().getName();
                 String loved = msg.getMentionedUsers().size() > 0 ? msg.getMentionedUsers().get(0).getName(): Util.getCommandContents(msg);
-                msg.getChannel().sendMessage(lover + " gave love to " + loved).queue();
+                msg.getChannel().sendMessage(lover + " gives love to " + loved).queue();
     }
 }
