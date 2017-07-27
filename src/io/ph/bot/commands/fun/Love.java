@@ -20,8 +20,7 @@ public class Love extends Command {
     @Override
     public void executeCommand(Message msg) {
                 String lover = msg.getAuthor().getName();
-                String loved = msg.getMentionedUsers().size() > 0 ? msg.getMentionedUsers().get(0).getName();
-                String loved = Util.getCommandContents(msg);
+                String loved = msg.getMentionedUsers().size() > 0 ? msg.getMentionedUsers().get(0).getName(): Util.getCommandContents(msg);
                 msg.getChannel().sendMessage(lover + " gave love to " + loved).queue();
     }
 }

@@ -18,7 +18,7 @@ import net.dv8tion.jda.core.entities.Role;
 
 /**
  * Get basic information on a user
- * @author p
+ * @author Nick
  *
  */
 @CommandData (

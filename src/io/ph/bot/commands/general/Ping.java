@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.entities.Message;
 		aliases = {"ping"},
 		category = CommandCategory.UTILITY,
 		permission = Permission.NONE,
-		description = "Am I alive?",
+		description = "HELLO? Am I alive?",
 		example = ""
 		)
 public class Ping extends Command {
