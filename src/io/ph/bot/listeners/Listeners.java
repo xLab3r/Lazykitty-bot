@@ -384,6 +384,9 @@ public class Listeners extends ListenerAdapter {
 						new File("resources/guilds/" + g.getId() + "/Data.db"));
 				FileUtils.copyFile(new File("resources/guilds/template.json"), 
 						new File("resources/guilds/" + g.getId() + "/IdlePlaylist.json"));
+				FileUtils.forceMkdir("resources/guilds/" + g.getId() + "/profiles/");
+				FileUtils.copyFile(new File("resources/guilds/" + g.getId() + "/template.db"),
+					new File("resources/guilds/" + g.getId() + "/profiles/Data.db"));
 				log.info("Guild file initialized: {}", g.getId());
 			} catch (IOException e1) {
 				e1.printStackTrace();
