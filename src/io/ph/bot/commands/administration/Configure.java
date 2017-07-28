@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.entities.Message;
 
 /**
  * Various one-time configuration settings
- * @author p
+ * @author Nick
  *
  */
 @CommandData (

@@ -148,24 +148,18 @@ public class HowTo extends Command {
 				+ "This role will have special permission overrides for every channel, preventing them from sending messages. "
 				+ "To do this, make sure you have the Manage Server role and do `%ssetup`", 
 				prefix), false)
-		.addField("Basic configuration", String.format("I feature a web-dashboard you can use to configure me. "
-				+ "Access it at <https://momobot.io/dash> - it's self explanatory and very simple!",
-				prefix), false)
 		.addField("Music", String.format("Last, but not least, is music. You have two options for how the music "
 				+ "system should work. \n**1)** Have the bot join whatever channel you're in to play music: No action required\n"
 				+ "**2)** Specify a single channel the bot should go to: Do `%ssetupmusic`\n"
 				+ "Then, if you want music announcements for when a new song is playing, do `%<smusicchannel` in a "
 				+ "designated channel.", 
-				prefix), false)
-		.addField("Support", String.format("If you need help with the bot, feel free to join my support server at %s",
-				"https://momobot.io/join"), false);
+				prefix), false);
 	}
 	private void defaultMessage(String prefix, TextChannel channel) {
 		em.setTitle("How To options", null)
 		.setColor(Color.MAGENTA)
 		.setDescription(String.format("Do `%showto` with a topic afterwards, i.e. `%<showto setup`.\n"
-				+ "If you just want a list of commands, do `%<scommands`\n"
-				+ "More info, invite links, and the dashboard can be found at my website: <https://momobot.io>", prefix))
+				+ "If you just want a list of commands, do `%<scommands`\n"))
 		.addField("Options", "setup, moderation, role management, live feeds, music", true);
 		channel.sendMessage(em.build()).queue();
 	}

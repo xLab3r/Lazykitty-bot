@@ -23,7 +23,7 @@ import net.dv8tion.jda.core.entities.Message;
 		defaultSyntax = "prune",
 		aliases = {},
 		category = CommandCategory.MODERATION,
-		permission = Permission.KICK,
+		permission = Permission.MANAGE_ROLES,
 		description = "Prune n messages (default 40, up to 75). Can prune a specific user's messages with a mention.\n",
 		example = "25 @target\n"
 				+ "50\n"

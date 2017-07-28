@@ -24,7 +24,7 @@ public class Say extends Command {
 
 	@Override
 	public void executeCommand(Message msg) {
-		msg.getChannel().sendMessage(Util.getCommandContents(msg).replaceAll("[<|@|>]", "")).queue(success -> {
+		msg.getChannel().sendMessage(Util.getCommandContents(msg)).queue(success -> {
 			msg.delete().queue();
 		});
 	}
