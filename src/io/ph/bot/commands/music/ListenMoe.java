@@ -54,7 +54,7 @@ public class ListenMoe extends Command {
 				em.setTitle("Error", null)
 				.setColor(Color.RED)
 				.setDescription("You must be in a voice channel so I know where to go!");
-				msg.getChannel().sendMessage(em.build()).queue();
+				msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});
 				return;
 			}
 		}

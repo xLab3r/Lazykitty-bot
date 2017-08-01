@@ -68,7 +68,7 @@ public class Macro extends Command {
 		} else {
 			try {
 				MacroObject m = MacroObject.forName(contents, msg.getGuild().getId(), true);
-				msg.getChannel().sendMessage(m.getMacroContent()).queue();
+				msg.getChannel().sendMessage(m.getMacroContent()).queue(success -> {msg.delete().queue();});
 				return;
 			} catch (IllegalArgumentException e) {
 				em.setTitle("Error", null)
@@ -76,7 +76,7 @@ public class Macro extends Command {
 				.setDescription(e.getMessage());
 			}
 		}
-		msg.getChannel().sendMessage(em.build()).queue();
+		msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});
 	}
 
 	/**
