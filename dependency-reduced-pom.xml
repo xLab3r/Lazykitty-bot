@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.ph</groupId>
   <artifactId>momobutt</artifactId>
-  <name>Momobutt-1</name>
+  <name>Momobutt</name>
   <version>1.2beta</version>
   <description>Momobutt</description>
   <build>
