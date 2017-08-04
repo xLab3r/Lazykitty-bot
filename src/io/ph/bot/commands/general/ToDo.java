@@ -20,6 +20,13 @@ import io.ph.util.Util;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
+import org.apache.commons.lang3.StringUtils;
+
+import io.ph.bot.model.GuildObject;
+import io.ph.bot.model.ToDoObject;
+import net.dv8tion.jda.core.entities.Member;
+
+
 /**
  * Set a ToDo list, seeable by all
  * @author Nick
@@ -69,7 +76,7 @@ public class ToDo extends Command {
             ToDoCheck();           
         } else {
             try {
-                ToDoObject m = ToDoObject.forName(contents, msg.getGuild().getId(), true);
+                ToDoObject m = ToDoObject.forNum(contents, msg.getGuild().getId(), true);
                 msg.getChannel().sendMessage(m.getToDoContent()).queue(success -> {msg.delete().queue();});
                 return;
             } catch (IllegalArgumentException e) {
@@ -143,7 +150,7 @@ public class ToDo extends Command {
             return;
         }
         try {
-            ToDoObject m = ToDoObject.forName(contents, msg.getGuild().getId());
+            ToDoObject m = ToDoObject.forNum(contents, msg.getGuild().getId());
             if(m.delete(msg.getAuthor().getId())) {
                 em.setTitle("Success", null)
                 .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
@@ -179,7 +186,7 @@ public class ToDo extends Command {
         }
         String[] resolved = resolveToDoNameAndContents(contents);
         try {
-            ToDoObject m = ToDoObject.forName(resolved[0], msg.getGuild().getId());
+            ToDoObject m = ToDoObject.forNum(resolved[0], msg.getGuild().getId());
             if(m.edit(msg.getAuthor().getId(), resolved[1])) {
                 em.setTitle("Success", null)
                 .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
@@ -241,7 +248,7 @@ public class ToDo extends Command {
             return;
         }
         try {
-            ToDoObject m = ToDoObject.forName(contents, msg.getGuild().getId());
+            ToDoObject m = ToDoObject.forNum(contents, msg.getGuild().getId());
             Member mem = msg.getGuild().getMemberById(m.getUserId());
             em.setTitle("Information on " + contents, null)
             .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
@@ -271,7 +278,7 @@ public class ToDo extends Command {
         }
         String[] resolved = resolveToDoNameAndContents(contents);
         try {
-            ToDoObject m = ToDoObject.forName(resolved[0], msg.getGuild().getId());
+            ToDoObject m = ToDoObject.forNum(resolved[0], msg.getGuild().getId());
             if(m.edit(msg.getAuthor().getId(), "COMPLETE *******" + resolved[0) + "******* COMPLETE") {
                 em.setTitle("Success", null)
                 .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
