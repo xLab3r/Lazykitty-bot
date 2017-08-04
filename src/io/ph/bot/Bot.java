@@ -53,7 +53,7 @@ public class Bot {
 
 	// Set to true if you want various debug statements
 	public static final boolean DEBUG = false;
-	public static final String BOT_VERSION = "1.2beta";
+	public static final String BOT_VERSION = "1.3beta";
 	public static boolean isReady = false;
 
 	private APIKeys apiKeys = new APIKeys();
@@ -110,7 +110,9 @@ public class Bot {
 			botConfig.setToken(config.getString("BotToken"));
 			botConfig.setAvatar(config.getString("Avatar"));
 			botConfig.setBotOwnerId(config.getLong("BotOwnerId", 0));
+			botConfig.setBotDeveloperId(config.getLong("BotDeveloperId", 0));
 			botConfig.setBotInviteLink(config.getString("InviteLink"));
+			botConfig.setBotInviteBotLink(config.getString("InviteBotLink"));
 			botConfig.setMaxSongLength(config.getInt("MaxSongLength", 15));
 			botConfig.setCompanionBot(config.getBoolean("MusicCompanion", false));
 
@@ -176,9 +178,9 @@ public class Bot {
 	}
 
 	public class BotConfiguration {
-		private String token, avatar, botInviteLink;
+		private String token, avatar, botInviteLink, botInviteBotLink;
 		private boolean companionBot;
-		private long botOwnerId;
+		private long botOwnerId,botDeveloperId;
 		private int maxSongLength; // in minutes
 
 		public boolean isCompanionBot() {
@@ -227,6 +229,22 @@ public class Bot {
 
 		public void setBotInviteLink(String botInviteLink) {
 			this.botInviteLink = botInviteLink;
+		}
+
+		public String getBotInviteBotLink() {
+			return botInviteBotLink;
+		}
+
+		public void setBotInviteBotLink(String botInviteBotLink) {
+			this.botInviteBotLink = botInviteBotLink;
+		}
+
+		public long getBotDeveloperId() {
+			return botDeveloperId;
+		}
+
+		public void setBotDeveloperId(long botOwnerId) {
+			this.botDeveloperId = botDeveloperId;
 		}
 	}
 

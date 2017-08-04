@@ -408,6 +408,8 @@ public class Util {
 			if (Util.isInteger(s)) {
 				previous = Integer.parseInt(s);
 				continue;
+			} else {
+				previous = 0;
 			}
 			switch(s) {
 			case "w":

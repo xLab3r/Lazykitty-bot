@@ -31,11 +31,14 @@ import net.dv8tion.jda.core.entities.Message;
 		permission = Permission.NONE,
 		description = "Create, delete, edit, search, or get information on a macro\n"
 				+ "A macro is a quick way to bind text or links to a shortcut",
-				example = "create \"test macro\" contents *This creates a macro named `test macro`*\n"
-						+ "delete test macro *This deletes the macro*\n"
-						+ "edit \"test macro\" new contents *This edits the macro's contents*\n"
-						+ "info test macro *This gives information on the macro*\n"
-						+ "test macro *This calls the macro*"
+		example = "create \"test macro\" contents *This creates a macro named `test macro`*\n"
+				+ "delete test macro *This deletes the macro*\n"
+				+ "edit \"test macro\" new contents *This edits the macro's contents*\n"
+				+ "list \"user\" *lists all macro created by the user*\n"
+				+ "listall *lists all macros for server*\n"
+				+ "info test macro *This gives information on the macro*\n"
+				+ "test macro *This calls the macro*\n"
+				+ "rank *Will rank the top 10 macros*\n"
 		)
 public class Macro extends Command {
 	private EmbedBuilder em;
@@ -63,9 +66,13 @@ public class Macro extends Command {
 			searchForMacro();
 		} else if (param.equalsIgnoreCase("list")) {
 			listMacros();
+		} else if (param.equalsIgnoreCase("listall")) {
+			listMacrosAll();
 		} else if(param.equalsIgnoreCase("info")) {
 			macroInfo();
-		} else {
+		} else if(param.equalsIgnoreCase("rank")) {
+			macroRank();
+		}  else {
 			try {
 				MacroObject m = MacroObject.forName(contents, msg.getGuild().getId(), true);
 				msg.getChannel().sendMessage(m.getMacroContent()).queue(success -> {msg.delete().queue();});
@@ -276,9 +283,31 @@ public class Macro extends Command {
 			sb.append(s + ", ");
 		}
 		
-		em.setTitle("Macros created by " + msg.getMember().getEffectiveName(), null)
+		em.setTitle("Macros created by " + m.getEffectiveName(), null)
 		.setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
 		.setDescription(sb.substring(0, sb.length() - 2));
+	}
+
+	/**
+	 * List all macros made
+	 */
+	private void listMacrosAll() {
+		String users = msg.getGuild().getUsers();
+		Member m;
+		for (m in users) {
+			String[] results = MacroObject.searchByUser(m.getUser().getId(), msg.getGuild().getId());
+				if (results == null) {
+					return;
+				}
+			StringBuilder sb = new StringBuilder();
+			for (String s : results) {
+				sb.append(s + ", ");
+			}
+			
+			em.setTitle("Macros created by " + m.getEffectiveName(), null)
+			.setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
+			.setDescription(sb.substring(0, sb.length() - 2));
+		};
 	}
 
 	/**

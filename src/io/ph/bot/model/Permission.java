@@ -15,6 +15,7 @@ public enum Permission {
 	MANAGE_SERVER("Manage server", net.dv8tion.jda.core.Permission.MANAGE_SERVER),
 	ADMINISTRATOR("Administrator", net.dv8tion.jda.core.Permission.ADMINISTRATOR),
 	BOT_OWNER("Bot owner", null);
+	BOT_DEVELOPER("Bot developer", null);
 	
 	private final String readable;
 	private final net.dv8tion.jda.core.Permission jdaPerm;

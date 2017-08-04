@@ -22,7 +22,21 @@ public class ConnectionPool {
 		}
 		return null;
 	}
-	
+	/**
+	 * Get connection to the devel database, Devel.db
+	 * @return Connection to this database
+	 */
+	public static Connection getDevelDatabaseConnection() throws SQLException {
+		try {
+			Class.forName("org.sqlite.JDBC");
+			return DriverManager.getConnection("jdbc:sqlite:resources/database/Devel.db");
+		} catch(SQLTimeoutException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}	
 	/**
 	 * Get connection to the Twitch.tv Database, TwitchTV.db
 	 * @return Connection to this database

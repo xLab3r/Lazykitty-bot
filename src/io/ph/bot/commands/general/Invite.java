@@ -17,7 +17,7 @@ import net.dv8tion.jda.core.entities.Message;
 		aliases = {},
 		category = CommandCategory.UTILITY,
 		permission = Permission.NONE,
-		description = "Send a link to invite me to a server",
+		description = "Send a link to invite someone to this server",
 		example = "(no parameters)"
 		)
 public class Invite extends Command {
@@ -26,6 +26,6 @@ public class Invite extends Command {
 	public void executeCommand(Message msg) {
 		if(Bot.getInstance().getConfig().getBotInviteLink() == null)
 			return;
-		msg.getChannel().sendMessage(Bot.getInstance().getConfig().getBotInviteLink()).queue();
+		msg.getChannel().sendMessage(Bot.getInstance().getConfig().getBotInviteLink()).queue(success -> {msg.delete().queue();});
 	}
 }
