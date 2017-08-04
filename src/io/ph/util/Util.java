@@ -152,6 +152,10 @@ public class Util {
 				&& member.getUser().getIdLong() == Bot.getInstance().getConfig().getBotOwnerId()) {
 			return true;
 		}
+		if (permission.getJdaPerm() == null 
+				&& member.getUser().getIdLong() == Bot.getInstance().getConfig().getBotDeveloperId()) {
+			return true;
+		}
 		if (permission.getJdaPerm() != null && member.hasPermission(permission.getJdaPerm())) {
 			return true;
 		}
