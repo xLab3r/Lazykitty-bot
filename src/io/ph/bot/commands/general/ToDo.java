@@ -27,7 +27,7 @@ import net.dv8tion.jda.core.entities.Message;
  */
 
 @CommandData (
-        defaultSyntax = "ToDo",
+        defaultSyntax = "todo",
         aliases = {"list"},
         category = CommandCategory.UTILITY,
         permission = Permission.BOT_DEVELOPER,
