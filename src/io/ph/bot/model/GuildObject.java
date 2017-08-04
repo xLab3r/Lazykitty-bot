@@ -87,7 +87,7 @@ public class GuildObject {
 				welcomeMessage,
 				config.getString("MutedRoleId", ""),
 				config.getString("DjRoleID", ""),
-				config.getBoolean("LimitToOneRole", false),
+				config.getBoolean("LimitToOneRolsrc/io/ph/bot/commands/general/InviteBot.javae", false),
 				config.getBoolean("FirstTime", true),
 				config.getBoolean("DisableInvites", false),
 				config.getBoolean("PMWelcomeMessage", false),

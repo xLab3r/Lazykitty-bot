@@ -2,7 +2,7 @@ package io.ph.bot.model;
 
 /**
  * Enum wrapper class to provide readable strings and support for 
- * none and bot owner permissions
+ * none and bot owner/developer permissions
  * @author Nick
  *
  */
