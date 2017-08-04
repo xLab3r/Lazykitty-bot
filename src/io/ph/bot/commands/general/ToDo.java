@@ -21,22 +21,23 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 /**
- * Set a todo list, seeable by all
+ * Set a ToDo list, seeable by all
  * @author Nick
  *
  */
 
 @CommandData (
-        defaultSyntax = "todo",
+        defaultSyntax = "ToDo",
         aliases = {"list"},
         category = CommandCategory.UTILITY,
-        permission = Permission.BOT_OWNER,,
-        description = "Create a todo list for bot.\n",
+        permission = Permission.BOT_DEVELOPER,
+        description = "Create a ToDo list for bot.\n",
         example = "add contents *This add contents*\n"
-                + "delete num *This deletes todo num*\n"
+                + "delete num *This deletes ToDo num*\n"
                 + "edit num *This edits num's contents*\n"
                 + "list *This gives information on the list*\n"
-                + "check num *This completes the todo*"
+                + "info num *This gives information on the list item*\n"
+                + "check num *This completes the ToDo*"
         )
 public class ToDo extends Command {
     private EmbedBuilder em;
@@ -55,21 +56,21 @@ public class ToDo extends Command {
 
         String param = Util.getParam(msg);
         if(param.equalsIgnoreCase("add")) {
-            addToDo();
+            createToDo();
         } else if(param.equalsIgnoreCase("delete")) {
             deleteToDo();
         } else if(param.equalsIgnoreCase("edit")) {
             editToDo();
-        } else if(param.equalsIgnoreCase("search")) {
-            searchForMacro();
-        } else if (param.equalsIgnoreCase("list")) {
-            listMacros();
+        } else if(param.equalsIgnoreCase("list")) {
+            listToDo();
         } else if(param.equalsIgnoreCase("info")) {
-            macroInfo();
+            infoToDo();
+        } else if(param.equalsIgnoreCase("check")) {
+            ToDoCheck();           
         } else {
             try {
-                MacroObject m = MacroObject.forName(contents, msg.getGuild().getId(), true);
-                msg.getChannel().sendMessage(m.getMacroContent()).queue(success -> {msg.delete().queue();});
+                ToDoObject m = ToDoObject.forName(contents, msg.getGuild().getId(), true);
+                msg.getChannel().sendMessage(m.getToDoContent()).queue(success -> {msg.delete().queue();});
                 return;
             } catch (IllegalArgumentException e) {
                 em.setTitle("Error", null)
@@ -81,34 +82,44 @@ public class ToDo extends Command {
     }
 
     /**
-     * Create a macro
+     * Create a ToDo
      */
-    private void createMacro() {
+    private void createToDo() {
         contents = Util.getCommandContents(contents);
-        if(contents.equals("") || contents.split(" ").length < 2) {
+        if(contents.equals("") || contents.split(" ").length < 1) {
             em.setTitle("Error", null)
             .setColor(Color.RED)
             .addField(GuildObject.guildMap.get(msg.getGuild().getId()).getConfig().getCommandPrefix() 
-                    + "macro create name contents",
-                    "You have designated to create a macro, but your"
+                    + "ToDo create *contents*",
+                    "You have designated to create a ToDo, but your"
                             + " command does not meet all requirements\n"
-                            + "*name* - Name of the macro. If it is multi-worded, "
-                            + "you can surround it in \"quotation marks\"\n"
-                            + "*contents* - Contents of the macro", true);
+                            + "*contents* - Contents of the ToDo", true);
             return;
         }
-        String[] resolved = resolveMacroNameAndContents(contents);
-        MacroObject m = new MacroObject(msg.getAuthor().getName(), resolved[0], resolved[1],
+        String[] resolved = resolveToDoNameAndContents(contents);
+        Integer iter = 1;xd
+        ToDoObject m = new ToDoObject(msg.getAuthor().getName(), resolved[0], iter,
                 0, msg.getAuthor().getId(), msg.getGuild().getId());
         try {
             if(m.create()) {
                 em.setTitle("Success", null)
                 .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
-                .setDescription("Macro **" + resolved[0] + "** created");
+                .setDescription("ToDo **" + iter + "** created");
             } else {
-                em.setTitle("Error", null)
-                .setColor(Color.RED)
-                .setDescription("Macro **" + resolved[0] + "** already exists");
+                while (! m.create()){
+                    iter += 1;
+                    ToDoObject m = new ToDoObject(msg.getAuthor().getName(), resolved[0], iter,
+                            0, msg.getAuthor().getId(), msg.getGuild().getId());                  
+                }
+                if(m.create()) {
+                    em.setTitle("Success", null)
+                    .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
+                    .setDescription("Macro **" + iter + "** created");
+                } else {
+                    em.setTitle("Error", null)
+                    .setColor(Color.RED)
+                    .setDescription("Macro **" + iter + "** failed");
+                }
             }
         } catch(SQLException e) {
             e.printStackTrace();
@@ -116,32 +127,31 @@ public class ToDo extends Command {
     }
 
     /**
-     * Delete a macro
+     * Delete a ToDo
      */
-    private void deleteMacro() {
+    private void deleteToDo() {
         contents = Util.getCommandContents(contents);
         if(contents.equals("")) {
             em.setTitle("Error", null)
             .setColor(Color.RED)
             .addField(GuildObject.guildMap.get(msg.getGuild().getId()).getConfig().getCommandPrefix() 
-                    + "macro delete name",
-                    "You have designated to delete a macro, "
+                    + "ToDo delete name",
+                    "You have designated to delete a ToDo, "
                             + "but your command does not meet all requirements"
-                            + "*name* - Name of the macro. No quotation "
-                            + "marks for multi-worded macros", true);
+                            + "*name* - Name of the ToDo. No quotation "
+                            + "marks for multi-worded ToDo", true);
             return;
         }
         try {
-            MacroObject m = MacroObject.forName(contents, msg.getGuild().getId());
+            ToDoObject m = ToDoObject.forName(contents, msg.getGuild().getId());
             if(m.delete(msg.getAuthor().getId())) {
                 em.setTitle("Success", null)
                 .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
-                .setDescription("Macro **" + contents + "** deleted");
+                .setDescription("ToDo **" + contents + "** deleted");
             } else {
                 em.setTitle("Error", null)
                 .setColor(Color.RED)
-                .setDescription("You cannot delete macro **" + contents + "**")
-                .setFooter("Users can only delete their own macros", null);
+                .setDescription("You cannot delete ToDo **" + contents + "**")
             }
         } catch (IllegalArgumentException e) {
             em.setTitle("Error", null)
@@ -151,113 +161,45 @@ public class ToDo extends Command {
     }
 
     /**
-     * Edit a macro
+     * Edit a ToDo
      */
-    private void editMacro() {
+    private void editToDo() {
         contents = Util.getCommandContents(contents);
         if(contents.equals("")) {
             em.setTitle("Error", null)
             .setColor(Color.RED)
             .addField(GuildObject.guildMap.get(msg.getGuild().getId()).getConfig().getCommandPrefix() 
-                    + "macro edit name content",
-                    "You have designated to edit a macro, but your "
+                    + "ToDo edit num content",
+                    "You have designated to edit a ToDo, but your "
                             + "command does not meet all requirements"
-                            + "*name* - Name of the macro. Requires "
-                            + "\"quotation marks\" for multi-worde macros"
-                            + "*content* - Content of the macro", true);
+                            + "*num* - Number of the ToDo."
+                            + "*content* - Content of the ToDo", true);
             return;
 
         }
-        String[] resolved = resolveMacroNameAndContents(contents);
+        String[] resolved = resolveToDoNameAndContents(contents);
         try {
-            MacroObject m = MacroObject.forName(resolved[0], msg.getGuild().getId());
+            ToDoObject m = ToDoObject.forName(resolved[0], msg.getGuild().getId());
             if(m.edit(msg.getAuthor().getId(), resolved[1])) {
                 em.setTitle("Success", null)
                 .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
-                .setDescription("Macro **" + resolved[0] + "** edited");
+                .setDescription("ToDo **" + resolved[0] + "** edited");
             } else {
                 em.setTitle("Error", null)
                 .setColor(Color.RED)
-                .setDescription("You cannot edit macro **" + contents + "**")
-                .setFooter("Users can only edit their own macros", null);
+                .setDescription("You cannot edit ToDo **" + contents + "**")
             }
         } catch (IllegalArgumentException e) {
             em.setTitle("Error", null)
             .setColor(Color.RED)
-            .setDescription("Macro **" + resolved[0] + "** does not exist");
+            .setDescription("ToDo **" + resolved[0] + "** does not exist");
         }
     }
-
+  
     /**
-     * Fuzzy search for a macro
+     * List all ToDo made by a user
      */
-    private void searchForMacro() {
-        contents = Util.getCommandContents(contents);
-        if(contents.equals("")) {
-            em.setTitle("Error", null)
-            .setColor(Color.RED)
-            .addField(GuildObject.guildMap.get(msg.getGuild().getId()).getConfig().getCommandPrefix() 
-                    + "macro search [macro-name|user]",
-                    "You have designated to search for a macro, but "
-                            + "your command does not meet all requirements"
-                            + "*name* - Name of the macro to search for. "
-                            + "No quotation marks needed for multi-word macros"
-                            + "*user* - An @ mention of a user to search for", true);
-            return;
-        }
-        String[] result;
-        StringBuilder sb = new StringBuilder();
-        // Search mentions a user
-        if(msg.getMentionedUsers().size() == 1) {
-            if((result = MacroObject.searchByUser(msg.getMentionedUsers().get(0).getId(),
-                    msg.getGuild().getId())) != null) {
-                em.setTitle("Search results for user " 
-                        + msg.getGuild().getMember(msg
-                                .getMentionedUsers().get(0)).getEffectiveName(), null)
-                .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN));
-                int i = 0;
-                for(String s : result) {
-                    if(i++ == 75) {
-                        em.setFooter("Search limited to 75 results", null);
-                        break;
-                    }
-                    sb.append(s + ", ");
-                }
-                sb.setLength(sb.length() - 2);
-                em.setDescription(sb.toString());
-            } else {
-                em.setTitle("No macros found", null)
-                .setColor(Color.RED)
-                .setDescription("No results for user **" 
-                        + msg.getGuild().getMember(msg
-                                .getMentionedUsers().get(0)).getEffectiveName() + "**");
-            }
-        } else {
-            if((result = MacroObject.searchForName(contents, msg.getGuild().getId())) != null) {
-                em.setTitle("Search results for " + contents, null)
-                .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN));
-                int i = 0;
-                for(String s : result) {
-                    if(i++ == 75) {
-                        em.setFooter("Search limited to 75 results", null);
-                        break;
-                    }
-                    sb.append(s + ", ");
-                }
-                sb.setLength(sb.length() - 2);
-                em.setDescription(sb.toString());
-            } else {
-                em.setTitle("No macros found", null)
-                .setColor(Color.RED)
-                .setDescription("No results for **" + contents + "**");
-            }
-        }
-    }
-    
-    /**
-     * List all macros made by a user
-     */
-    private void listMacros() {
+    private void listToDo() {
         Member m;
         String possibleUser = Util.getCommandContents(this.contents);
         if (possibleUser.isEmpty()) {
@@ -265,11 +207,11 @@ public class ToDo extends Command {
         } else {
             m = Util.resolveMemberFromMessage(possibleUser, msg.getGuild());
         }
-        String[] results = MacroObject.searchByUser(m.getUser().getId(), msg.getGuild().getId());
+        String[] results = ToDoObject.searchByUser(m.getUser().getId(), msg.getGuild().getId());
         if (results == null) {
             em.setTitle("Error", null)
             .setColor(Color.RED)
-            .setDescription("No macros found for user " + m.getEffectiveName());
+            .setDescription("No ToDo found for user " + m.getEffectiveName());
             return;
         }
         StringBuilder sb = new StringBuilder();
@@ -277,34 +219,33 @@ public class ToDo extends Command {
             sb.append(s + ", ");
         }
         
-        em.setTitle("Macros created by " + m.getEffectiveName(), null)
+        em.setTitle("ToDo created by " + m.getEffectiveName(), null)
         .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
         .setDescription(sb.substring(0, sb.length() - 2));
     }
 
     /**
-     * Send information on a macro
+     * Send information on a ToDo
      */
-    private void macroInfo() {
+    private void infoToDo() {
         contents = Util.getCommandContents(contents);
         if(contents.equals("")) {
             em.setTitle("Error", null)
             .setColor(Color.RED)
             .addField(GuildObject.guildMap.get(msg.getGuild().getId()).getConfig().getCommandPrefix() 
-                    + "macro info name",
-                    "You have designated to search for a macro, "
+                    + "ToDo info name",
+                    "You have designated to search for a ToDo, "
                             + "but your command does not meet all requirements"
-                            + "*name* - Name of the macro to display info for. "
-                            + "No quotation marks needed for multi-word macros", true);
+                            + "*num* - Number of the ToDo to display info for. "
+                            + "No quotation marks needed for multi-word ToDo", true);
             return;
         }
         try {
-            MacroObject m = MacroObject.forName(contents, msg.getGuild().getId());
+            ToDoObject m = ToDoObject.forName(contents, msg.getGuild().getId());
             Member mem = msg.getGuild().getMemberById(m.getUserId());
             em.setTitle("Information on " + contents, null)
             .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
             .addField("Creator", mem == null ? m.getFallbackUsername() : mem.getEffectiveName(), true)
-            .addField("Hits", m.getHits()+"", true)
             .addField("Date created", m.getDate().toString(), true);
         } catch (IllegalArgumentException e) {
             em.setTitle("Error", null)
@@ -313,13 +254,48 @@ public class ToDo extends Command {
         }
     }
     /**
-     * Resolve macro name and contents from a create statement
-     * This works to involve quotations around a spaced macro name
-     * @param s The parameters of a create statement - The contents past the $macro create bit
-     * @return Two index array: [0] is the macro name, [1] is the contents
+     * Complete a ToDo
+     */
+    private void editToDo() {
+        contents = Util.getCommandContents(contents);
+        if(contents.equals("")) {
+            em.setTitle("Error", null)
+            .setColor(Color.RED)
+            .addField(GuildObject.guildMap.get(msg.getGuild().getId()).getConfig().getCommandPrefix() 
+                    + "ToDo check num ",
+                    "You have designated to check a ToDo, but your "
+                            + "command does not meet all requirements"
+                            + "*num* - Number of the ToDo.", true);
+            return;
+
+        }
+        String[] resolved = resolveToDoNameAndContents(contents);
+        try {
+            ToDoObject m = ToDoObject.forName(resolved[0], msg.getGuild().getId());
+            if(m.edit(msg.getAuthor().getId(), "COMPLETE *******" + resolved[0) + "******* COMPLETE") {
+                em.setTitle("Success", null)
+                .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
+                .setDescription("ToDo **" + resolved[0] + "** edited");
+            } else {
+                em.setTitle("Error", null)
+                .setColor(Color.RED)
+                .setDescription("You cannot check ToDo **" + resolved[0]+ "**")
+            }
+        } catch (IllegalArgumentException e) {
+            em.setTitle("Error", null)
+            .setColor(Color.RED)
+            .setDescription("ToDo **" + resolved[0] + "** does not exist");
+        }
+    }
+  
+    /**
+     * Resolve ToDo name and contents from a create statement
+     * This works to involve quotations around a spaced ToDo name
+     * @param s The parameters of a create statement - The contents past the $ToDo create bit
+     * @return Two index array: [0] is the ToDo name, [1] is the contents
      * Prerequisite: s.split() must have length of >= 2
      */
-    private static String[] resolveMacroNameAndContents(String s) {
+    private static String[] resolveToDoNameAndContents(String s) {
         String[] toReturn = new String[2];
         if(s.contains("\"") && StringUtils.countMatches(s, "\"") > 1) {
             int secondIndexOfQuotes = s.indexOf("\"", s.indexOf("\"") + 1);
