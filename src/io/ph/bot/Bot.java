@@ -243,7 +243,7 @@ public class Bot {
 			return botDeveloperId;
 		}
 
-		public void setBotDeveloperId(long botOwnerId) {
+		public void setBotDeveloperId(long botDeveloperId) {
 			this.botDeveloperId = botDeveloperId;
 		}
 	}
