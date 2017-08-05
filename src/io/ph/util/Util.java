@@ -153,6 +153,9 @@ public class Util {
 			return true;
 		} else if (permission.getJdaPerm() == null 
 				&& member.getUser().getIdLong() == Bot.getInstance().getConfig().getbotDeveloperId()) {
+			return true;		
+		} else if (permission.getJdaPerm() != null 
+				&& member.getUser().getIdLong() == Bot.getInstance().getConfig().getbotDeveloperId()) {
 			return true;
 		} else if (permission.getJdaPerm() != null && member.hasPermission(permission.getJdaPerm())) {
 			return true;
