@@ -96,3 +96,154 @@ It's as easy as that~
 note: commands with permission `Permission.NONE` are disableable by admins by using the `disable` command
 
 If you're going to delve deeper into developing with JDA, check out the documentation [here](http://home.dv8tion.net:8080/job/JDA/Promoted%20Build/javadoc/) and join up at the [Discord API server](https://discordapp.com/invite/0SBTUU1wZTWPnGdJ).
+
+
+
+
+# root
+
+* The pom.xml file is the xml representation of the Maven Project. POM stands for "Project Object Model".
+This contains the dependencies and licenses for the entire maven project.
+
+* The OPcide Reference.md Lists the opcodes for the client handshakes that are initiated to the discord api
+
+# resource
+* avatar
+
+** holds the pictures that Momobutt can use for her avatar
+
+* config
+
+** DefaultGlobalSettings.properties houses the defaukt
+
+* database houses the first sqlite database that the rest of the databases are based off of
+
+* guilds
+
+** Will normally house the guilds here + the template information for the guilds
+
+* Bot properties is an important file that acts as the configuration file for your server. Fill out the necessary fields (bot token and bot owner) and you can begin. The file should be self explainatory
+
+
+# src/io/ph
+* bot
+
+** bot.java
+
+*** Singleton instance of the entire bot. Includes configuration and the main JDA singleton
+
+** launder.java
+
+*** Main entry point and setup directories
+
+** state.java
+
+*** Various helper methods to change the state of the bot
+
+** audio
+
+*** houses all audio events
+
+** commands
+
+*** Command.java
+
+**** sets up the command modules to be run, is dynamic and checks permissions
+
+*** CommandCategories
+
+**** Defines the command categories to be used and callable by anyone
+
+*** COmmandData
+
+**** defines the syntax for the command files
+
+*** CommandHandler
+
+****  A centralized class that manages all commands available across servers
+
+*** administration
+
+**** admin commands to modify server
+
+*** fun
+
+**** fun commands that anyone can run and have no lasting affects on server
+
+*** games
+
+**** will look up characters in each of the games, based from the RESTWrapper repo
+
+*** general
+
+**** everyone can use these commands but these can have more lasting affects as they can range from all  users to light mod commands
+
+*** japanese
+
+**** scripts for looking up anime, jap words, or theme songs
+
+*** moderation
+
+**** These are mod/admin/owner only commands. These have the potential to spam the server or drastically change the way they function
+
+*** music
+
+**** These commands are only available to those with the dj role
+
+*** owner
+
+**** commands only available to the bot owner and will change globally the commands of the bot. use with caution
+
+** events
+
+*** defines separate events for when people are muted/unmuted
+
+** exceptions
+
+*** Lists of exceptions that are described and throwable in the code
+
+** feed
+
+*** The different feeds that the bot has, reddit, twitch, twitter
+
+** jobs
+
+*** command files for the scheduled or frequent jobs
+
+** listeners
+
+*** very important to the chaning of events in the guild like people entering, leaving, joining, etc
+
+** model
+
+*** provides the model layout for generic objects or frequently used objects
+
+** procedural
+
+*** defines command that come in a sequence like yes no commands etc
+
+** scheduler
+
+*** periodically checks for changes in feeds or event updates
+
+** ws
+
+*** handles incoming and outgoing connections. Check the opcode reference in root directory
+
+* db
+
+** setup files for the handling of sqlite databases
+
+* rest
+
+** initialize cache size
+
+* util
+
+** sends message to channels/users and handles receiving of messages
+
+
+
+
+When you add a command, make sure you populate the change to: resource/config/DefaultGloba..., resource/guilds/template..., and place command in the io.ph.bot.commands directory
+
