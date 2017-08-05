@@ -151,11 +151,14 @@ public class Util {
 		if (permission.getJdaPerm() == null 
 				&& member.getUser().getIdLong() == Bot.getInstance().getConfig().getBotOwnerId()) {
 			return true;
-		}
-		if (permission.getJdaPerm() != null && member.hasPermission(permission.getJdaPerm())) {
+		} else if (permission.getJdaPerm() == null 
+				&& member.getUser().getIdLong() == Bot.getInstance().getConfig().getbotDeveloperId()) {
 			return true;
+		} else if (permission.getJdaPerm() != null && member.hasPermission(permission.getJdaPerm())) {
+			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 
 	/**
@@ -408,6 +411,8 @@ public class Util {
 			if (Util.isInteger(s)) {
 				previous = Integer.parseInt(s);
 				continue;
+			} else {
+				previous = 0;
 			}
 			switch(s) {
 			case "w":

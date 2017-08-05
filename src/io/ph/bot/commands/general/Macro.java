@@ -2,7 +2,7 @@ package io.ph.bot.commands.general;
 
 import java.awt.Color;
 import java.sql.SQLException;
-
+import java.util.Iterator;
 import org.apache.commons.lang3.StringUtils;
 
 import io.ph.bot.commands.Command;
@@ -16,6 +16,7 @@ import io.ph.util.Util;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.Guild;
 
 /**
  * Create, delete, search, call information, and call macros
@@ -31,11 +32,14 @@ import net.dv8tion.jda.core.entities.Message;
 		permission = Permission.NONE,
 		description = "Create, delete, edit, search, or get information on a macro\n"
 				+ "A macro is a quick way to bind text or links to a shortcut",
-				example = "create \"test macro\" contents *This creates a macro named `test macro`*\n"
-						+ "delete test macro *This deletes the macro*\n"
-						+ "edit \"test macro\" new contents *This edits the macro's contents*\n"
-						+ "info test macro *This gives information on the macro*\n"
-						+ "test macro *This calls the macro*"
+		example = "create \"test macro\" contents *This creates a macro named `test macro`*\n"
+				+ "delete test macro *This deletes the macro*\n"
+				+ "edit \"test macro\" new contents *This edits the macro's contents*\n"
+				+ "list \"user\" *lists all macro created by the user*\n"
+				+ "listall *lists all macros for server*\n"
+				+ "info test macro *This gives information on the macro*\n"
+				+ "test macro *This calls the macro*\n"
+				+ "rank *Will rank the top 10 macros*\n"
 		)
 public class Macro extends Command {
 	private EmbedBuilder em;
@@ -63,12 +67,16 @@ public class Macro extends Command {
 			searchForMacro();
 		} else if (param.equalsIgnoreCase("list")) {
 			listMacros();
+		} else if (param.equalsIgnoreCase("listall")) {
+			listMacrosAll();
 		} else if(param.equalsIgnoreCase("info")) {
 			macroInfo();
-		} else {
+		} else if(param.equalsIgnoreCase("rank")) {
+			macroRank();
+		}  else {
 			try {
 				MacroObject m = MacroObject.forName(contents, msg.getGuild().getId(), true);
-				msg.getChannel().sendMessage(m.getMacroContent()).queue();
+				msg.getChannel().sendMessage(m.getMacroContent()).queue(success -> {msg.delete().queue();});
 				return;
 			} catch (IllegalArgumentException e) {
 				em.setTitle("Error", null)
@@ -76,7 +84,7 @@ public class Macro extends Command {
 				.setDescription(e.getMessage());
 			}
 		}
-		msg.getChannel().sendMessage(em.build()).queue();
+		msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});
 	}
 
 	/**
@@ -276,9 +284,30 @@ public class Macro extends Command {
 			sb.append(s + ", ");
 		}
 		
-		em.setTitle("Macros created by " + msg.getMember().getEffectiveName(), null)
+		em.setTitle("Macros created by " + m.getEffectiveName(), null)
 		.setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
 		.setDescription(sb.substring(0, sb.length() - 2));
+	}
+
+	/**
+	 * List all macros made
+	 */
+	private void listMacrosAll() {
+		Iterator<Member> iterator = msg.getGuild().getMembers().iterator();
+		while (iterator.hasNext()) {
+			Member m = iterator.next();
+			String[] results = MacroObject.searchByUser(m.getUser().getId(),msg.getGuild().getId());
+				if (results == null) {
+					return;
+				}
+			StringBuilder sb = new StringBuilder();
+			for (String s : results) {
+				sb.append(s + ", ");
+			}
+			em.setTitle("Macros created ", null)
+			.setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
+			.setDescription(sb.substring(0, sb.length() - 2));
+		};
 	}
 
 	/**
@@ -303,6 +332,32 @@ public class Macro extends Command {
 			em.setTitle("Information on " + contents, null)
 			.setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
 			.addField("Creator", mem == null ? m.getFallbackUsername() : mem.getEffectiveName(), true)
+			.addField("Hits", m.getHits()+"", true)
+			.addField("Date created", m.getDate().toString(), true);
+		} catch (IllegalArgumentException e) {
+			em.setTitle("Error", null)
+			.setColor(Color.RED)
+			.setDescription(e.getMessage());
+		}
+	}
+	/**
+	 * Send information on a macro
+	 */
+	private void macroRank() {
+		contents = Util.getCommandContents(contents);
+		if(contents.equals("")) {
+			em.setTitle("Error", null)
+			.setColor(Color.RED)
+			.addField(GuildObject.guildMap.get(msg.getGuild().getId()).getConfig().getCommandPrefix() 
+					+ "macro rank",
+					"You have designated to search for a highest hit macro, ", true);
+			return;
+		}
+		try {
+			MacroObject m = MacroObject.topMacro(msg.getGuild().getId());
+			em.setTitle("Information on " + m.getMacroName()+"", null)
+			.setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
+			.addField("Creator", m.getFallbackUsername(), true)
 			.addField("Hits", m.getHits()+"", true)
 			.addField("Date created", m.getDate().toString(), true);
 		} catch (IllegalArgumentException e) {

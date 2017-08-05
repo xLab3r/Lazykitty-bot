@@ -26,6 +26,6 @@ public class Invite extends Command {
 	public void executeCommand(Message msg) {
 		if(Bot.getInstance().getConfig().getBotInviteLink() == null)
 			return;
-		msg.getChannel().sendMessage(Bot.getInstance().getConfig().getBotInviteLink()).queue();
+		msg.getChannel().sendMessage(Bot.getInstance().getConfig().getBotInviteLink()).queue(success -> {msg.delete().queue();});
 	}
 }
