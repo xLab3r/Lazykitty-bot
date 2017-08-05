@@ -4,7 +4,7 @@
   <groupId>io.ph</groupId>
   <artifactId>momobutt</artifactId>
   <name>Momobutt</name>
-  <version>1.2beta</version>
+  <version>1.3beta</version>
   <description>Momobutt</description>
   <build>
     <sourceDirectory>src</sourceDirectory>

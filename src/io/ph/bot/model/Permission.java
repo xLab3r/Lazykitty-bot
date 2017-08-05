@@ -2,7 +2,7 @@ package io.ph.bot.model;
 
 /**
  * Enum wrapper class to provide readable strings and support for 
- * none and bot owner permissions
+ * none and bot owner/developer permissions
  * @author Nick
  *
  */
@@ -14,7 +14,8 @@ public enum Permission {
 	MANAGE_CHANNELS("Manage channels", net.dv8tion.jda.core.Permission.MANAGE_CHANNEL),
 	MANAGE_SERVER("Manage server", net.dv8tion.jda.core.Permission.MANAGE_SERVER),
 	ADMINISTRATOR("Administrator", net.dv8tion.jda.core.Permission.ADMINISTRATOR),
-	BOT_OWNER("Bot owner", null);
+	BOT_OWNER("Bot owner", null),
+	BOT_DEVELOPER("Bot developer", null);
 	
 	private final String readable;
 	private final net.dv8tion.jda.core.Permission jdaPerm;

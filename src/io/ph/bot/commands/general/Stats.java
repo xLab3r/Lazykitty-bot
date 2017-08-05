@@ -50,12 +50,12 @@ public class Stats extends Command {
 		}
 
 
-		Object[] topMacro = null;
+		MacroObject topMacro = null;
 		if((topMacro = MacroObject.topMacro(msg.getGuild().getId())) != null) {
-			Member m = msg.getGuild().getMemberById((String) topMacro[2]);
-			String name = m == null ? (String) topMacro[3] : m.getEffectiveName();
-			em.addField("Top macro", "**" + topMacro[1] + "** by **"
-					+ name + "**: " + topMacro[0] + " hits", true);
+			Member m = msg.getGuild().getMemberById((String) topMacro.getUserId());
+			String name = m == null ? (String) topMacro.getFallbackUsername() : m.getEffectiveName();
+			em.addField("Top macro", "**" + topMacro.getMacroName() + "** by **"
+					+ name + "**: " + topMacro.getHits() + " hits", true);
 		}
 		em.setColor(Util.resolveColor(msg.getMember(), Color.CYAN))
 		.setFooter("Bot version: " + Bot.BOT_VERSION, null);
