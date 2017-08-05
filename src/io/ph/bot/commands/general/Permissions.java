@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.lang.StringBuilder;
 
 import io.ph.bot.commands.Command;
 import io.ph.bot.commands.CommandCategory;
@@ -45,175 +46,104 @@ public class Permissions extends Command {
     public void executeCommand(Message msg) {
         String t = Util.getCommandContents(msg);
         Member target = null;
-        if (msg.getMentionedUsers().size() > 0) {
-            target = msg.getGuild().getMember(msg.getMentionedUsers().get(0));
+        String authorname = msg.getAuthor().getName();
+        String suser = null;
+    if (Util.memberHasPermission(msg.getGuild().getMember(msg.getAuthor()), Permission.BOT_OWNER)){
+            if (msg.getMentionedUsers().size() > 0) {
+                target = msg.getGuild().getMember(msg.getMentionedUsers().get(0));
+                suser = msg.getGuild().getMember(msg.getMentionedUsers().get(0)).getEffectiveName();
+            } else if (Util.resolveMemberFromMessage(t, msg.getGuild()) != null) {
+                target = Util.resolveMemberFromMessage(t, msg.getGuild());
+                suser = Util.resolveMemberFromMessage(t, msg.getGuild()).getEffectiveName();
+            } else {
+                target = msg.getGuild().getMember(msg.getAuthor());
+                suser = authorname;
+            }
         } else {
-            target = Util.resolveMemberFromMessage(msg.getAuthor().getName(), msg.getGuild());
+            target = msg.getGuild().getMember(msg.getAuthor());
+            suser = authorname;
         }
 
         EmbedBuilder em = new EmbedBuilder();
+        Integer c = 0;
+        StringBuilder stringBuilder = new StringBuilder();
+        
         if (Util.memberHasPermission(target, Permission.NONE)) {
-            Integer c = 0;
-            em.setTitle("Allowed", null)
-            .setColor(Util.resolveColor(target, Color.GREEN))
-            .setDescription("You have NONE permissions"); 
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } else { 
-            Integer c = 0;
-            em.setTitle("Not Allowed", null)
-            .setColor(Util.resolveColor(target, Color.RED))
-            .setDescription("You DO NOT have NON permissions");
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } if (Util.memberHasPermission(target, Permission.KICK)) {
-            Integer c = 0;
-            em.setTitle("Allowed", null)
-            .setColor(Util.resolveColor(target, Color.GREEN))
-            .setDescription("You have KICK permissions");     
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } else { 
-            Integer c = 0;
-            em.setTitle("Not Allowed", null)
-            .setColor(Util.resolveColor(target, Color.RED))
-            .setDescription("You DO NOT have KICK permissions");  
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } if (Util.memberHasPermission(target, Permission.BAN)) {
-            Integer c = 0;
-            em.setTitle("Allowed", null)
-            .setColor(Util.resolveColor(target, Color.GREEN))
-            .setDescription("You have BAN permissions");       
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } else { 
-            Integer c = 0;
-            em.setTitle("Not Allowed", null)
-            .setColor(Util.resolveColor(target, Color.RED))
-            .setDescription("You DO NOT have BAN permissions");   
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } if (Util.memberHasPermission(target, Permission.MANAGE_ROLES)) {
-            Integer c = 0;
-            em.setTitle("Allowed", null)
-            .setColor(Util.resolveColor(target, Color.GREEN))
-            .setDescription("You have MANAGE_ROLES permissions");
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }                            
-        } else { 
-            Integer c = 0;
-            em.setTitle("Not Allowed", null)
-            .setColor(Util.resolveColor(target, Color.RED))
-            .setDescription("You DO NOT have MANAGE_ROLES permissions");   
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } if (Util.memberHasPermission(target, Permission.MANAGE_CHANNELS)) {
-            Integer c = 0;
-            em.setTitle("Allowed", null)
-            .setColor(Util.resolveColor(target, Color.GREEN))
-            .setDescription("You have MANAGE_CHANNELS permissions");  
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } else { 
-            Integer c = 0;
-            em.setTitle("Not Allowed", null)
-            .setColor(Util.resolveColor(target, Color.RED))
-            .setDescription("You DO NOT have MANAGE_CHANNELS permissions");
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }                          
-        } if (Util.memberHasPermission(target, Permission.MANAGE_SERVER)) {
-            em.setTitle("Allowed", null)
-            .setColor(Util.resolveColor(target, Color.GREEN))
-            .setDescription("You have MANAGE_SERVER permissions");
-            Integer c = 0;    
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } else { 
-            Integer c = 0;
-            em.setTitle("Not Allowed", null)
-            .setColor(Util.resolveColor(target, Color.RED))
-            .setDescription("You DO NOT have MANAGE_SERVER permissions"); 
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } if (Util.memberHasPermission(target, Permission.ADMINISTRATOR)) {
-            Integer c = 0;
-            em.setTitle("Allowed", null)
-            .setColor(Util.resolveColor(target, Color.GREEN))
-            .setDescription("You have ADMINISTRATOR permissions");    
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } else { 
-            em.setTitle("Not Allowed", null)
-            .setColor(Util.resolveColor(target, Color.RED))
-            .setDescription("You DO NOT have ADMINISTRATOR permissions"); 
-            Integer c = 0;
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } if (Util.memberHasPermission(target, Permission.BOT_OWNER)) {
-            em.setTitle("Allowed", null)
-            .setColor(Util.resolveColor(target, Color.GREEN))
-            .setDescription("You have BOT_OWNER permissions"); 
-            Integer c = 0;
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } else { 
-            em.setTitle("Not Allowed", null)
-            .setColor(Util.resolveColor(target, Color.RED))
-            .setDescription("You DO NOT have BOT_OWNER permissions");   
-            Integer c = 0;
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } if (Util.memberHasPermission(target, Permission.BOT_DEVELOPER)) {
-            em.setTitle("Allowed", null)
-            .setColor(Util.resolveColor(target, Color.GREEN))
-            .setDescription("You have BOT_DEVELOPER permissions");            
-            Integer c = 0;
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
-        } else { 
-            em.setTitle("Not Allowed", null)
-            .setColor(Util.resolveColor(target, Color.RED))
-            .setDescription("You DO NOT have BOT_DEVELOPER permissions");
-            Integer c = 0;
-            if (c == 0){
-                msg.getChannel().sendMessage(em.build()).queue(success -> {msg.delete().queue();});                                
-                c = 1;
-            }
+            stringBuilder.append("ALLOWED NONE\n");
+        } else
+            stringBuilder.append("NOT ALLOWED NONE\n");
+
+    
+        if (Util.memberHasPermission(target, Permission.KICK)) {
+            stringBuilder.append("ALLOWED KICK\n");
+        } else
+            stringBuilder.append("NOT ALLOWED KICK\n");
+
+    
+        if (Util.memberHasPermission(target, Permission.BAN)) {
+            stringBuilder.append("ALLOWED BAN\n");
+        } else
+            stringBuilder.append("NOT ALLOWED BAN\n");
+
+    
+        if (Util.memberHasPermission(target, Permission.MANAGE_ROLES)) {
+            stringBuilder.append("ALLOWED MANAGE_ROLES\n");
+        } else
+            stringBuilder.append("NOT ALLOWED MANAGE_ROLES\n");
+
+    
+        if (Util.memberHasPermission(target, Permission.MANAGE_SERVER)) {
+            stringBuilder.append("ALLOWED MANAGE_SERVER\n");
+        } else
+            stringBuilder.append("NOT ALLOWED MANAGE_SERVER\n");
+
+    
+        if (Util.memberHasPermission(target, Permission.MANAGE_CHANNELS)) {
+            stringBuilder.append("ALLOWED MANAGE_CHANNELS\n");
+        } else
+            stringBuilder.append("NOT ALLOWED MANAGE_CHANNELS\n");
+
+    
+        if (Util.memberHasPermission(target, Permission.BOT_OWNER)) {
+            stringBuilder.append("ALLOWED BOT_OWNER\n");
+        } else
+            stringBuilder.append("NOT ALLOWED BOT_OWNER\n");
+
+
+        if (Util.memberHasPermission(target, Permission.BOT_DEVELOPER)) {
+            stringBuilder.append("ALLOWED BOT_DEVELOPER\n");
+        } else
+            stringBuilder.append("NOT ALLOWED BOT_DEVELOPER\n");
+
+
+        String finalString = stringBuilder.toString();
+        StringBuilder stringDisplay = new StringBuilder();
+
+        stringDisplay.append("These are the permissions for guild: ");
+        stringDisplay.append(msg.getGuild().getName()+"");
+        stringDisplay.append("\n");
+        stringDisplay.append("For the user: ");
+        stringDisplay.append(suser+"");
+        String finalDisplay = stringDisplay.toString();
+
+
+        if (c == 0){
+            msg.getAuthor().openPrivateChannel().queue(success -> {
+                em.setTitle("Permissions", null)
+                .setColor(Color.CYAN)
+                .setDescription(finalDisplay)
+                .addField("",finalString,true);
+            msg.getAuthor().openPrivateChannel().complete()
+            .sendMessage(em.build()).queue(success1 -> {
+                em.clearFields();
+                em.setTitle("Success", null)
+                .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
+                .setDescription("Check your PMs!");
+                msg.getChannel().sendMessage(em.build()).queue();
+                });
+            msg.delete().queue();
+            });                          
+            c = 1;
         }
     }
 }
