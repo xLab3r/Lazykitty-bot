@@ -63,19 +63,19 @@ public class MacroObject {
 	 * @return Object array with index 0: hits 1: macro name 2: userid 3: fallback username
 	 * @throws NoMacroFoundException
 	 */
+	//	public MacroObject(String fallbackUsername, String macroName, String macroContent, int hits,String userId, String guildId) {
 	public static MacroObject topMacro(String guildId) throws IllegalArgumentException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
 			conn = ConnectionPool.getConnection(guildId);
-			stmt = conn.prepareStatement("SELECT user_created, date_created, content, hits, user_id  FROM `discord_macro` ORDER BY hits DESC LIMIT 1");
+			stmt = conn.prepareStatement("SELECT macro, user_created, date_created, content, hits, user_id  FROM `discord_macro` ORDER BY hits DESC LIMIT 1");
 			rs = stmt.executeQuery();
 			if(!rs.isBeforeFirst())
 				return null;
 			rs.next();
-			return new MacroObject(rs.getString(1), rs.getString(0), rs.getString(3), rs.getInt(4), rs.getString(5),
-					guildId, LocalDate.parse(rs.getObject(2).toString()));
+			return new MacroObject(rs.getString(2), rs.getString(1), rs.getString(4), rs.getInt(5), rs.getString(6),guildId, LocalDate.parse(rs.getObject(3).toString()));
 		} catch(SQLException e) {
 			e.printStackTrace();
 		} finally {

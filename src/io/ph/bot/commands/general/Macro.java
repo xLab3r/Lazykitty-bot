@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.sql.SQLException;
 import java.util.Iterator;
 import org.apache.commons.lang3.StringUtils;
+import java.util.List;
 
 import io.ph.bot.commands.Command;
 import io.ph.bot.commands.CommandCategory;
@@ -293,21 +294,23 @@ public class Macro extends Command {
 	 * List all macros made
 	 */
 	private void listMacrosAll() {
-		Iterator<Member> iterator = msg.getGuild().getMembers().iterator();
-		while (iterator.hasNext()) {
-			Member m = iterator.next();
-			String[] results = MacroObject.searchByUser(m.getUser().getId(),msg.getGuild().getId());
-				if (results == null) {
-					return;
+		StringBuilder totalString = new StringBuilder();
+		List<Member> iteratorion = msg.getGuild().getMembers();
+		iteratorion.forEach(j -> {
+			String[] results = MacroObject.searchByUser(j.getUser().getId(),msg.getGuild().getId());
+			if (results != null) {
+				StringBuilder sb = new StringBuilder();
+				for (String s : results) {
+					sb.append(s + ", ");
 				}
-			StringBuilder sb = new StringBuilder();
-			for (String s : results) {
-				sb.append(s + ", ");
+	        	String finalSb = sb.toString();
+				totalString.append(j.getUser().getName() + ": " + finalSb + "\n");
 			}
-			em.setTitle("Macros created ", null)
-			.setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
-			.setDescription(sb.substring(0, sb.length() - 2));
-		};
+		});
+		String finalTotal = totalString.toString();
+		em.setTitle("All Macros created in this guild: ", null)
+		.setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
+		.setDescription(finalTotal);
 	}
 
 	/**
@@ -344,15 +347,6 @@ public class Macro extends Command {
 	 * Send information on a macro
 	 */
 	private void macroRank() {
-		contents = Util.getCommandContents(contents);
-		if(contents.equals("")) {
-			em.setTitle("Error", null)
-			.setColor(Color.RED)
-			.addField(GuildObject.guildMap.get(msg.getGuild().getId()).getConfig().getCommandPrefix() 
-					+ "macro rank",
-					"You have designated to search for a highest hit macro, ", true);
-			return;
-		}
 		try {
 			MacroObject m = MacroObject.topMacro(msg.getGuild().getId());
 			em.setTitle("Information on " + m.getMacroName()+"", null)
