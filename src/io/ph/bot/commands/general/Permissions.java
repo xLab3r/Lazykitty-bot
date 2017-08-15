@@ -16,10 +16,12 @@ import io.ph.util.Util;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Member;
+
 /**
  * Get help with commands
  * @author Nick
  */
+
 /*
  *   NONE("No permissions", net.dv8tion.jda.core.Permission.MESSAGE_READ),
  *   KICK("Kick", net.dv8tion.jda.core.Permission.KICK_MEMBERS),
@@ -40,6 +42,7 @@ import net.dv8tion.jda.core.entities.Member;
         description = "Tells users their server power level",
         example = ""
         )
+
 public class Permissions extends Command {
 
     @Override
@@ -67,54 +70,14 @@ public class Permissions extends Command {
         EmbedBuilder em = new EmbedBuilder();
         Integer c = 0;
         StringBuilder stringBuilder = new StringBuilder();
-        
-        if (Util.memberHasPermission(target, Permission.NONE)) {
-            stringBuilder.append("ALLOWED NONE\n");
-        } else
-            stringBuilder.append("NOT ALLOWED NONE\n");
 
-    
-        if (Util.memberHasPermission(target, Permission.KICK)) {
-            stringBuilder.append("ALLOWED KICK\n");
-        } else
-            stringBuilder.append("NOT ALLOWED KICK\n");
-
-    
-        if (Util.memberHasPermission(target, Permission.BAN)) {
-            stringBuilder.append("ALLOWED BAN\n");
-        } else
-            stringBuilder.append("NOT ALLOWED BAN\n");
-
-    
-        if (Util.memberHasPermission(target, Permission.MANAGE_ROLES)) {
-            stringBuilder.append("ALLOWED MANAGE_ROLES\n");
-        } else
-            stringBuilder.append("NOT ALLOWED MANAGE_ROLES\n");
-
-    
-        if (Util.memberHasPermission(target, Permission.MANAGE_SERVER)) {
-            stringBuilder.append("ALLOWED MANAGE_SERVER\n");
-        } else
-            stringBuilder.append("NOT ALLOWED MANAGE_SERVER\n");
-
-    
-        if (Util.memberHasPermission(target, Permission.MANAGE_CHANNELS)) {
-            stringBuilder.append("ALLOWED MANAGE_CHANNELS\n");
-        } else
-            stringBuilder.append("NOT ALLOWED MANAGE_CHANNELS\n");
-
-    
-        if (Util.memberHasPermission(target, Permission.BOT_OWNER)) {
-            stringBuilder.append("ALLOWED BOT_OWNER\n");
-        } else
-            stringBuilder.append("NOT ALLOWED BOT_OWNER\n");
-
-
-        if (Util.memberHasPermission(target, Permission.BOT_DEVELOPER)) {
-            stringBuilder.append("ALLOWED BOT_DEVELOPER\n");
-        } else
-            stringBuilder.append("NOT ALLOWED BOT_DEVELOPER\n");
-
+        for (Permission p : Permission.values()) {
+            if (Util.memberHasPermission(target, p)) {
+                stringBuilder.append(String.format("ALLOWED %s\n", p.name()));
+            } else {
+                stringBuilder.append(String.format("NOT ALLOWED %s\n", p.name()));
+            }
+        }
 
         String finalString = stringBuilder.toString();
         StringBuilder stringDisplay = new StringBuilder();
