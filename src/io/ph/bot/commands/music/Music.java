@@ -32,9 +32,9 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 				+ "You can also play your guild's music playlist\n"
 				+ "If your server has a DJ role, this command is restricted to those in that role or mod+",
 				example = "https://youtu.be/dQw4w9WgXcQ\n"
-						+ "playlist (plays your guild's playlist)\n"
-						+ "now\n"
-						+ "next\n"
+						+ "playlist/gpl (plays your guild's playlist)\n"
+						+ "now/nowplaying\n"
+						+ "next/list\n"
 						+ "skip (kick+ force skips)\n"
 						+ "volume (requires kick+)\n"
 						+ "shuffle (requires kick+)\n"
@@ -98,14 +98,13 @@ public class Music extends Command {
 		if (contents.startsWith("skip")) {
 			skip(msg, djSet);
 			return;
-		} else if (contents.startsWith("now")) {
+		} else if (contents.startsWith("now") || contents.startsWith("nowplaying")) {
 			now(msg);
 			return;
 		} else if (contents.startsWith("next") || contents.startsWith("list")) {
 			next(msg);
 			return;
-		} else if (contents.startsWith("stop") || contents.startsWith("clear")
-				|| contents.startsWith("reset")) {
+		} else if (contents.startsWith("stop") || contents.startsWith("clear") || contents.startsWith("reset")) {
 			stop(msg, djSet);
 			return;
 		} else if (contents.startsWith("shuffle")) {
@@ -114,10 +113,10 @@ public class Music extends Command {
 		} else if (contents.startsWith("volume")) {
 			volume(msg, Util.getCommandContents(Util.getCommandContents(msg)), djSet);
 			return;
-		} else if (contents.startsWith("remove")) {
+		} else if (contents.startsWith("remove") || contents.startsWith("rm") || contents.startsWith("delete")) {
 			remove(msg, Util.getCommandContents(Util.getCommandContents(msg)), djSet);
 			return;
-		} else if (contents.startsWith("playlist")) {
+		} else if (contents.startsWith("playlist") || contents.startsWith("gpl")) {
 			// Just queue up all the songs I guess
 			if (!g.getSpecialChannels().getMusicVoice().isEmpty() 
 					&& msg.getJDA().getVoiceChannelById(g.getSpecialChannels().getMusicVoice()) != null) {

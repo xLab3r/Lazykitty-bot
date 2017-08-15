@@ -26,7 +26,7 @@ import net.dv8tion.jda.core.entities.Message;
 		description = "Create and manage the guild's playlist\n"
 				+ "Each server gets a playlist unique to it which you can add or remove songs to. "
 				+ "Sources can range from direct URLs to Youtube to Soundcloud",
-				example = "add link title-of-song (add a song with given link)\n"
+				example = "add link title-of-song (add a song with given link, requires both link and title of song)\n"
 						+ "list (list your playlist)\n"
 						+ "remove # (remove a song from your playlist at given index)\n"
 						+ "remove all (remove all songs from playlist)"
@@ -41,13 +41,13 @@ public class Playlist extends Command {
 		GuildObject g = GuildObject.guildMap.get(msg.getGuild().getId());
 		if (param.equals("add")) {
 			// Require "add link title"
-			if (split.length < 3) {
+			if (split.length < 3 || split[2] == "" || split[2] == " "){
 				MessageUtils.sendIncorrectCommandUsage(msg, this);
 				return;
 			}
 			String url = split[1];
-			String title = Util.combineStringArray(Util
-					.removeFirstArrayEntry(Util.removeFirstArrayEntry(split)));
+			String title = split[2];
+
 			if (g.getMusicPlaylist().size() <= MAX_SIZE) {
 				g.getMusicPlaylist().add(new PlaylistEntity(title, url));
 				em.setTitle("Success", null)

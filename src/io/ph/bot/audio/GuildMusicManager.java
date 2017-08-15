@@ -37,7 +37,7 @@ public class GuildMusicManager {
 	public static void loadGuildPlaylist(TextChannel channel, Member member) {
 		GuildObject g = GuildObject.guildMap.get(channel.getGuild().getId());
 		for (PlaylistEntity p : g.getMusicPlaylist()) {
-			loadAndPlay(channel, p.getUrl(), null, member, false);
+			loadAndPlay(channel, p.getUrl(), null, member, true);
 		}
 		EmbedBuilder em = new EmbedBuilder();
 		em.setTitle("Success", null)
@@ -116,7 +116,7 @@ public class GuildMusicManager {
 			public void noMatches() {
 				em.setTitle("Error", null)
 				.setColor(Color.RED)
-				.setDescription("Error queueing your track - not found");
+				.setDescription("No Match: Error queueing your track - not found");
 				channel.sendMessage(em.build()).queue();
 			}
 
