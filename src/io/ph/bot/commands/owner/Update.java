@@ -6,7 +6,16 @@ import io.ph.bot.commands.CommandData;
 import io.ph.bot.jobs.StatusChangeJob;
 import io.ph.bot.model.Permission;
 import io.ph.util.Util;
+import io.ph.bot.Bot;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.EmbedBuilder;
+import java.awt.Color;
+import java.util.List;
+
+/**
+ * Command to send an update message to current guild and all guild owners
+ * @author Nick
+ */
 
 @CommandData (
 		defaultSyntax = "update",
@@ -21,12 +30,24 @@ public class Update extends Command {
 
 	@Override
 	public void executeCommand(Message msg) {
+        EmbedBuilder em = new EmbedBuilder();
 		try {
 			StatusChangeJob.commenceUpdateCountdown(Integer.parseInt(Util.getCommandContents(msg)));
 			msg.getChannel().sendMessage("Updating in " + Util.getCommandContents(msg) + " minutes.").queue(success -> {msg.delete().queue();});
+			Bot.getInstance().getBots()
+			.forEach(j -> {
+				j.getGuilds()
+	            .forEach(g -> {
+	                g.getOwner().getUser().openPrivateChannel().queue(ch -> {
+	                	em.setTitle("Bot Restarting:", null)
+			            .setColor(Color.RED)
+			            .setDescription("Momobutt will be going doing temporarily to apply upgrades. T-" + Util.getCommandContents(msg) + " minutes.");
+			            g.getOwner().getUser().openPrivateChannel().complete().sendMessage(em.build()).queue();
+		            });
+		        });
+		    });
 		} catch(NumberFormatException e) {
 			msg.getChannel().sendMessage(Util.getCommandContents(msg) + " is not a valid integer");
 		}
 	}
-
 }
