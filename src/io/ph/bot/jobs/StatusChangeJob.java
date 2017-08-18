@@ -10,7 +10,12 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+
 import io.ph.bot.State;
+import io.ph.bot.Bot;
 
 public class StatusChangeJob implements Job {
 	public static List<String> statuses = new ArrayList<>();
