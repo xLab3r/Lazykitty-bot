@@ -28,6 +28,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -52,8 +53,8 @@ public class Bot {
 	private final static int SHARD_COUNT = 1;
 
 	// Set to true if you want various debug statements
-	public static final boolean DEBUG = false;
-	public static final String BOT_VERSION = "1.4";
+	public static final boolean DEBUG = true;
+	public static final String BOT_VERSION = "1.5";
 	public static boolean isReady = false;
 
 	private APIKeys apiKeys = new APIKeys();
@@ -90,6 +91,21 @@ public class Bot {
 		State.changeBotPresence(OnlineStatus.ONLINE);
 		initialize();
 		isReady = true;
+		if (!Bot.getInstance().getConfig().isCompanionBot()) {
+			ListenMoeSocket.getInstance().connect();
+		}
+		int countg = 0;
+		int countm = 0;
+		for (JDA j: Bot.getInstance().getBots()) {
+			for (Guild g: j.getGuilds()){
+            	countg ++;
+            	for (Member m: g.getMembers()){
+            		countm ++;
+               	}   
+            }
+	    }
+		StatusChangeJob.addStatus(String.valueOf(countg) + " guilds");
+		StatusChangeJob.addStatus(String.valueOf(countm) + " members");
 	}
 
 	/**
@@ -99,9 +115,6 @@ public class Bot {
 		JobScheduler.initializeScheduler();
 		TwitterEventListener.initTwitter();
 		WebsocketServer.getInstance().start();
-		if (!Bot.getInstance().getConfig().isCompanionBot()) {
-			ListenMoeSocket.getInstance().connect();
-		}
 	}
 
 	public boolean loadProperties() {
