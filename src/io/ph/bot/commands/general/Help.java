@@ -32,13 +32,37 @@ public class Help extends Command {
 	public void executeCommand(Message msg) {
 		String command = Util.getCommandContents(msg).toLowerCase();
 		EmbedBuilder em = new EmbedBuilder();
-		if(command.length() > 0) {
+		if (command.equals("show")) {			
+			List<Command> coll = (List<Command>) CommandHandler.getAllCommands();
+			Collections.sort(coll, (f, s) -> {
+				if(f.getPermission().compareTo(s.getPermission()) != 0)
+					return f.getPermission().compareTo(s.getPermission());
+				return f.getDefaultCommand().compareTo(s.getDefaultCommand());
+			});
+			StringBuilder sb = new StringBuilder();
+			String prevPermissions = "";
+			for(Command c : coll) {
+				if(!prevPermissions.equals(c.getPermission().toString())) {
+					if(prevPermissions.length() > 0)
+						em.addField(prevPermissions, sb.toString(), false);
+					sb.setLength(0);
+					prevPermissions = c.getPermission().toString();
+				}
+				sb.append(c.getDefaultCommand() + ",  ");
+			}
+			final String prev = prevPermissions;
+			em.setTitle("Command list", null)
+			.setColor(Color.CYAN)
+			.addField(prev, sb.toString().substring(0, sb.toString().length()-3), false)
+			.setFooter("PM me a command name to get more information", null);
+			msg.getChannel().sendMessage(em.build()).queue();
+		} else if(command.length() > 0) {
 			//Help about a specific command
 			Command c;
 			if((c = CommandHandler.getCommand(command)) == null) {
 				em.setTitle("Invalid command", null)
 				.setColor(Color.RED)
-				.setDescription(command + " is not a valid command");
+				.setDescription("'" + command + "' is not a valid command");
 				msg.getChannel().sendMessage(em.build()).queue();
 				return;
 			}
@@ -76,13 +100,13 @@ public class Help extends Command {
 					sb.setLength(0);
 					prevPermissions = c.getPermission().toString();
 				}
-				sb.append(c.getDefaultCommand() + "\n");
+				sb.append(c.getDefaultCommand() + ",  ");
 			}
 			final String prev = prevPermissions;
 			msg.getAuthor().openPrivateChannel().queue(success -> {
 				em.setTitle("Command list", null)
 				.setColor(Color.CYAN)
-				.addField(prev, sb.toString(), false)
+				.addField(prev, sb.toString().substring(0, sb.toString().length()-3), false)
 				.setFooter("PM me a command name to get more information", null);
 				msg.getAuthor().openPrivateChannel().complete()
 				.sendMessage(em.build()).queue(success1 -> {
@@ -93,9 +117,6 @@ public class Help extends Command {
 					msg.getChannel().sendMessage(em.build()).queue();
 				});
 			});
-			
 		}
-
 	}
-
 }
