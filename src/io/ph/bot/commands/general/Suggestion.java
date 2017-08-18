@@ -13,6 +13,7 @@ import io.ph.util.MessageUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -63,14 +64,14 @@ public class Suggestion extends Command {
         Util.resolveMemberFromMessage(devel,msg.getGuild()).getUser().openPrivateChannel().queue(success -> {
             em.setTitle("Suggestions", null)
             .setColor(Color.CYAN)
-            .addField("User: "," \"" + sb + " \"", true)
+            .addField("User: " + msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator()," \n\"" + sb + " \"", true)
             .setFooter("Message was sent Local time "+timeStamp, null);
             Util.resolveMemberFromMessage(devel,msg.getGuild()).getUser().openPrivateChannel().complete()
             .sendMessage(em.build()).queue(success1 -> {
                 em.clearFields();
                 em.setTitle("Success", null)
                 .setColor(Util.resolveColor(Util.memberFromMessage(msg), Color.GREEN))
-                .setDescription("Your suggestion has been sent!");
+                .setDescription("Your suggestion has been sent to " + devel);
                 msg.getChannel().sendMessage(em.build()).queue();
             });
         });
