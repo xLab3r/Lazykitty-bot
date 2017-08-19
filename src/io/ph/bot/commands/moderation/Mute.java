@@ -30,7 +30,7 @@ import net.dv8tion.jda.core.entities.Role;
  */
 @CommandData (
 		defaultSyntax = "mute",
-		aliases = {},
+		aliases = {"muted"},
 		category = CommandCategory.MODERATION,
 		permission = Permission.KICK,
 		description = "Assign the Muted role to a user. Can be temporary by using the \"temp\" parameter",

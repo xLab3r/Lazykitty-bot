@@ -56,4 +56,21 @@ public class ConnectionPool {
 		}
 		return null;
 	}
+
+    /**
+	 * Get connection muted database
+	 * @param db connection
+	 * @return Connection to this guild's database
+	 */
+	public static Connection getBotMutedConnection() throws SQLException {
+		try {
+			Class.forName("org.sqlite.JDBC");
+			return DriverManager.getConnection("jdbc:sqlite:resources/BotMutedData.db");
+		} catch(SQLTimeoutException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
