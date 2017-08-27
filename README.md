@@ -1,14 +1,10 @@
 # Welcome to Momobutt, an open source easy-to-host Discord Bot based off of Kagumi's [Momo](https://github.com/paul-io/momo-2.git) 
 
-[Join the Momobutt discord server](https://discord.gg/V2KPTx3) 
-
-Click the link above to join all the fun and action in the server.
-
 **Momobutt** is a easy-to-use Discord bot based off of [JDA](https://github.com/DV8FromTheWorld/JDA), adapted from Momo by Kagumi. Very robust and will handle many things: from sending Twitch.tv notifications to playing music, to temporarily muting troublemakers, Momobutt can do a lot for your server.
 
 
 ## Can I just add Momobutt to my server?
-Current Momobutt is self-hosted for the server [Erect Eggplants](https://discord.gg/V2KPTx3). However this code is provide as an effort to further Kagumi's legacy and to provide additional functionalities to the original Momo.
+Current Momobutt is self-hosted for the server [Erect Eggplants]. However this code is provide as an effort to further Kagumi's legacy and to provide additional functionalities to the original Momo.
 
 ### Features? Gimme some info!
 * Reddit, Twitter, & Twitch.tv feeds - Get updates directly to your channel of choice with image/preview configuration
