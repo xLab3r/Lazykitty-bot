@@ -63,10 +63,13 @@ public class GuildTrackManager extends AudioEventAdapter {
 		Guild guild = Bot.getInstance().shards.getGuildById(this.guildId);
 		GuildObject g = GuildObject.guildMap.get(this.guildId);
 		g.getMusicManager().getSkipVoters().clear();
+		if (track.getInfo().uri.contains("listen.moe")) {
+			GuildObject.streamingListenMoe--;
+		}
 		if (!queue.isEmpty()) {
 			// Kill queue and leave channel if no one is in
 			if (guild.getAudioManager().getConnectedChannel().getMembers().size() == 1) {
-				guild.getAudioManager().closeAudioConnection();
+				new Thread(() -> guild.getAudioManager().closeAudioConnection()).start();
 				g.getMusicManager().reset();
 				return;
 			}
@@ -81,8 +84,8 @@ public class GuildTrackManager extends AudioEventAdapter {
 				.setDescription("Your queue is all dried up");
 				ch.sendMessage(em.build()).queue();
 			}
-			guild.getAudioManager().closeAudioConnection();
 			currentSong = null;
+			new Thread(() -> guild.getAudioManager().closeAudioConnection()).start();
 		}
 	}
 
